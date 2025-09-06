@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KDAG Quiz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #000000;
+    color: #fff;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 700px;
+    width: 100%;
+    background-color: #121212;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+  }
+
+  h1 {
+    color: #ff0000;
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .question {
+    margin-bottom: 20px;
+  }
+
+  .question h3 {
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #ff4444;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    cursor: pointer;
+    color: #ddd;
+  }
+
+  input[type="radio"] {
+    margin-right: 10px;
+    accent-color: #ff0000;
+  }
+
+  .submit-btn {
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+  }
+
+  .submit-btn:hover {
+    background-color: #cc0000;
+  }
+
+  .result {
+    margin-top: 30px;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #ff4444;
+  }
+
+  .feedback {
+    margin-top: 15px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background-color: #1a1a1a;
+    color: #eee;
+  }
+
+  .correct-answer {
+    color: #00ff44;
+    font-weight: 600;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+    .container {
+      padding: 20px;
+    }
+    .submit-btn {
+      padding: 12px;
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>KDAG Knowledge Quiz</h1>
+  <form id="quizForm">
+    <div class="question" data-question-index="0">
+      <h3>1. What does KDAG stand for?</h3>
+      <label><input type="radio" name="q0" value="a" /> Kharagpur Data Analytics Group</label>
+      <label><input type="radio" name="q0" value="b" /> Kolkata Data Analysis Guild</label>
+      <label><input type="radio" name="q0" value="c" /> Kharagpur Digital Arts Group</label>
+      <label><input type="radio" name="q0" value="d" /> Kolkata Data Analytics Group</label>
+    </div>
+
+    <div class="question" data-question-index="1">
+      <h3>2. Which programming language is commonly used for data analytics in KDAG?</h3>
+      <label><input type="radio" name="q1" value="a" /> Python</label>
+      <label><input type="radio" name="q1" value="b" /> JavaScript</label>
+      <label><input type="radio" name="q1" value="c" /> C++</label>
+      <label><input type="radio" name="q1" value="d" /> Ruby</label>
+    </div>
+
+    <div class="question" data-question-index="2">
+      <h3>3. What is the primary focus of KDAG?</h3>
+      <label><input type="radio" name="q2" value="a" /> Data Visualization</label>
+      <label><input type="radio" name="q2" value="b" /> Data Analytics and Machine Learning</label>
+      <label><input type="radio" name="q2" value="c" /> Web Development</label>
+      <label><input type="radio" name="q2" value="d" /> Mobile App Development</label>
+    </div>
+
+    <div class="question" data-question-index="3">
+      <h3>4. Which library is popular for data visualization in Python used in KDAG?</h3>
+      <label><input type="radio" name="q3" value="a" /> Matplotlib</label>
+      <label><input type="radio" name="q3" value="b" /> React</label>
+      <label><input type="radio" name="q3" value="c" /> Django</label>
+      <label><input type="radio" name="q3" value="d" /> Flask</label>
+    </div>
+
+    <div class="question" data-question-index="4">
+      <h3>5. Which of these is a key skill emphasized in KDAG?</h3>
+      <label><input type="radio" name="q4" value="a" /> Graphic Design</label>
+      <label><input type="radio" name="q4" value="b" /> Statistical Analysis</label>
+      <label><input type="radio" name="q4" value="c" /> Architecture</label>
+      <label><input type="radio" name="q4" value="d" /> Cooking</label>
+    </div>
+
+    <button type="submit" class="submit-btn">Submit</button>
+  </form>
+
+  <div id="result" class="result"></div>
+  <div id="feedback"></div>
+</div>
+
+<script>
+  const correctAnswers = ['a', 'a', 'b', 'a', 'b'];
+
+  document.getElementById('quizForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const form = e.target;
+    let score = 0;
+    let total = correctAnswers.length;
+    let feedbackHTML = '';
+
+    for (let i = 0; i < total; i++) {
+      const userAnswer = form[`q${i}`].value;
+
+      const questionDiv = form.querySelector(`[data-question-index="${i}"]`);
+      const correctAnswer = correctAnswers[i];
+
+      if (userAnswer === correctAnswer) {
+        score++;
+        feedbackHTML += `<div class="feedback">Question ${i + 1}: <span class="correct-answer">Correct!</span> The correct answer is "${getAnswerText(i, correctAnswer)}".</div>`;
+      } else {
+        feedbackHTML += `<div class="feedback">Question ${i + 1}: Incorrect. The correct answer is "${getAnswerText(i, correctAnswer)}".</div>`;
+      }
+    }
+
+    document.getElementById('result').textContent = `You scored ${score} out of ${total}!`;
+    document.getElementById('feedback').innerHTML = feedbackHTML;
+  });
+
+  function getAnswerText(questionIndex, answerKey) {
+    const questions = [
+      ['Kharagpur Data Analytics Group', 'Kolkata Data Analysis Guild', 'Kharagpur Digital Arts Group', 'Kolkata Data Analytics Group'],
+      ['Python', 'JavaScript', 'C++', 'Ruby'],
+      ['Data Visualization', 'Data Analytics and Machine Learning', 'Web Development', 'Mobile App Development'],
+      ['Matplotlib', 'React', 'Django', 'Flask'],
+      ['Graphic Design', 'Statistical Analysis', 'Architecture', 'Cooking'],
+    ];
+
+    const indexMapping = { 'a': 0, 'b': 1, 'c': 2, 'd': 3 };
+    return questions[questionIndex][indexMapping[answerKey]];
+  }
+</script>
+</body>
+</html>
